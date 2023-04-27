@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
-    FullName: {
+    fullName: {
       type: String,
       required: true,
     },
@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    passWordHash: {
+    passwordHash: {
       type: String,
       required: true,
     },
