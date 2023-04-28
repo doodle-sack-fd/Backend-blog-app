@@ -3,6 +3,7 @@ import {
   createPost,
   getAllPosts,
   getOnePost,
+  removePost,
 } from "./app/controllers/post.controller.js";
 import checkAuth from "./app/utils/check-auth.middleware.js";
 import { loginValidation, registerValidation } from "./app/validations/auth.js";
@@ -45,6 +46,9 @@ async function main() {
 
   /* TODO: GetOnePost */
   app.get("/posts/:id", getOnePost);
+
+  /* TODO: DeletePost */
+  app.delete("/posts/:id", checkAuth, removePost);
   const PORT = process.env.PORT || 4000;
 
   app.listen(PORT, (err) => {

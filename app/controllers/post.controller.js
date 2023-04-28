@@ -67,3 +67,21 @@ export const getOnePost = async (req, res) => {
     });
   }
 };
+
+export const removePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const remove = await PostModel.findOneAndDelete({
+      _id: postId,
+    });
+
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Failed to find an articles",
+    });
+  }
+};
