@@ -1,5 +1,5 @@
 import UserModel from "../models/User.js";
-import { generateToken } from "./generate.token.js";
+import { generateToken } from "../utils/generate.token.js";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
 

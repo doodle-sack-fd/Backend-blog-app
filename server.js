@@ -1,6 +1,12 @@
 import { getMe, login, register } from "./app/controllers/User.controller.js";
+import {
+  createPost,
+  getAllPosts,
+  getOnePost,
+} from "./app/controllers/post.controller.js";
 import checkAuth from "./app/utils/check-auth.middleware.js";
-import { registerValidation } from "./app/validation/auth.js";
+import { loginValidation, registerValidation } from "./app/validations/auth.js";
+import { PostCreateValidation } from "./app/validations/post.js";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
@@ -23,7 +29,7 @@ async function main() {
 
   /* TODO:   Auth user  */
 
-  app.post("/login", login);
+  app.post("/login", loginValidation, login);
 
   /* TODO:   Register user  */
   app.post("/register", registerValidation, register);
@@ -31,6 +37,14 @@ async function main() {
   /* TODO: Get info about us */
   app.get("/me", checkAuth, getMe);
 
+  /* TODO: CreatePost */
+  app.post("/posts", checkAuth, PostCreateValidation, createPost);
+
+  /* TODO: GetAllPosts */
+  app.get("/posts", getAllPosts);
+
+  /* TODO: GetOnePost */
+  app.get("/posts/:id", getOnePost);
   const PORT = process.env.PORT || 4000;
 
   app.listen(PORT, (err) => {
