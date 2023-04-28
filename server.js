@@ -1,4 +1,5 @@
 import UserModel from "./app/models/User.js";
+import checkAuth from "./app/utils/check-auth.middleware.js";
 import { registerValidation } from "./app/validation/auth.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -23,7 +24,56 @@ async function main() {
     res.send("Hi");
   });
 
-  /* Register user */
+  /* TODO:   Auth user  */
+
+  app.post("/login", async (req, res) => {
+    try {
+      /* User in baseData? */
+      const user = await UserModel.findOne({
+        email: req.body.email,
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          message: "baseData is empty, user is not found",
+        });
+      }
+
+      const isValidPassword = await bcrypt.compare(
+        req.body.password,
+        user._doc.passwordHash
+      );
+
+      if (!isValidPassword) {
+        return res.status(404).json({
+          message: "Password is not defined",
+        });
+      }
+
+      const token = jwt.sign(
+        {
+          _id: user._id,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "30d",
+        }
+      );
+
+      const { passwordHash, ...userData } = user._doc;
+      res.json({
+        ...userData,
+        token,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        message: "Authorization error",
+      });
+    }
+  });
+
+  /* TODO:   Register user  */
   app.post("/register", registerValidation, async (req, res) => {
     try {
       const errors = validationResult(req);
@@ -70,6 +120,14 @@ async function main() {
     }
   });
 
+  /* TODO: Get info about us */
+  app.get("/me", checkAuth, (req, res) => {
+    try {
+      res.json({
+        success: true,
+      });
+    } catch (error) {}
+  });
   const PORT = process.env.PORT || 4000;
 
   app.listen(PORT, (err) => {
