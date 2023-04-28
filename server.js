@@ -7,11 +7,13 @@ import {
   updatePost,
 } from "./app/controllers/post.controller.js";
 import checkAuth from "./app/utils/check-auth.middleware.js";
+import handleValidation from "./app/utils/handle.validation.js";
 import { loginValidation, registerValidation } from "./app/validations/auth.js";
 import { PostCreateValidation } from "./app/validations/post.js";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
+import multer from "multer";
 
 dotenv.config();
 
@@ -22,25 +24,50 @@ mongoose
 
 const app = express();
 
+/* Where save and state.filename */
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    cb(null, "uploads");
+  },
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({
+  storage,
+});
+
 app.use(express.json());
+/* For open file.img */
+app.use("/uploads", express.static("uploads"));
 
 async function main() {
-  app.get("/", (req, res) => {
-    res.send("Hi");
+  app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
+    res.json({
+      /* Take path */
+      url: `/uploads${req.file.originalname}`,
+    });
   });
 
   /* TODO:   Auth user  */
 
-  app.post("/login", loginValidation, login);
+  app.post("/login", loginValidation, handleValidation, login);
 
   /* TODO:   Register user  */
-  app.post("/register", registerValidation, register);
+  app.post("/register", registerValidation, handleValidation, register);
 
   /* TODO: Get info about us */
   app.get("/me", checkAuth, getMe);
 
   /* TODO: CreatePost */
-  app.post("/posts", checkAuth, PostCreateValidation, createPost);
+  app.post(
+    "/posts",
+    checkAuth,
+    PostCreateValidation,
+    handleValidation,
+    createPost
+  );
 
   /* TODO: GetAllPosts */
   app.get("/posts", getAllPosts);
@@ -52,7 +79,14 @@ async function main() {
   app.delete("/posts/:id", checkAuth, removePost);
 
   /* TODO: UpdatePost */
-  app.patch("/posts/:id", updatePost);
+  app.patch(
+    "/posts/:id",
+    checkAuth,
+    PostCreateValidation,
+    handleValidation,
+    updatePost
+  );
+
   const PORT = process.env.PORT || 4000;
 
   app.listen(PORT, (err) => {
