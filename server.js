@@ -9,6 +9,7 @@ import {
 	createPost,
 	getAllPosts,
 	getOnePost,
+	getTags,
 	removePost,
 	updatePost,
 } from './app/controllers/post.controller.js';
@@ -76,6 +77,12 @@ async function main() {
 
 	/* TODO: GetAllPosts */
 	app.get('/posts', getAllPosts);
+
+	/* TODO: GetTags */
+	app.get('/tags', getTags);
+
+	/* TODO: GetTags */
+	app.get('posts/tags', getTags);
 
 	/* TODO: GetOnePost */
 	app.get('/posts/:id', getOnePost);
