@@ -1,3 +1,4 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
@@ -40,8 +41,9 @@ const storage = multer.diskStorage({
 const upload = multer({
 	storage,
 });
-
+/* Cors for disabled blocked port  */
 app.use(express.json());
+app.use(cors());
 /* For open file.img */
 app.use('/uploads', express.static('uploads'));
 
