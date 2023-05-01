@@ -52,7 +52,7 @@ async function main() {
 	app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 		res.json({
 			/* Take path */
-			url: `/uploads${req.file.originalname}`,
+			url: `/uploads/${req.file.originalname}`,
 		});
 	});
 

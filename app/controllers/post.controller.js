@@ -53,7 +53,7 @@ export const getOnePost = async (req, res) => {
 				/* After refresh count - return new Doc */
 				new: 'true',
 			},
-		);
+		).populate('user');
 
 		if (!updatePost) {
 			return res.status(404).json({ message: 'Статья не найдена' });
