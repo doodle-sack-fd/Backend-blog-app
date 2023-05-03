@@ -4,7 +4,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
 
-import { getMe, login, register } from './app/controllers/User.controller.js';
+import {
+	getMe,
+	login,
+	register,
+} from '../server/app/controllers/user.controller.js';
 import {
 	createPost,
 	getAllPosts,
